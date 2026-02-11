@@ -6,25 +6,40 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-path: ${{ steps.prepare.outputs.artifact-path }}
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Prepare public directory
+        id: prepare
+        run: |
+          rm -rf public
+          mkdir public
+          # copy common static files; adjust if you have a different structure
+          cp -R index.html public/ || true
+          cp -R CNAME public/ || true
+          if [ -d css ]; then cp -R css public/; fi
+          if [ -d js ]; then cp -R js public/; fi
+          # set step output so the job can reference it
+          echo "artifact-path=public" >> $GITHUB_OUTPUT
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          node-version: '14'
+          path: public
 
-      - name: Install dependencies
-        run: npm install
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
 
-      - name: Build project
-        run: npm run build
-
+    steps:
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./PixelNeighbor
+        uses: actions/deploy-pages@v1
