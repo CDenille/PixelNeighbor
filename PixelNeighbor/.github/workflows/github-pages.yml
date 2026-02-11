@@ -20,11 +20,11 @@ jobs:
         run: |
           rm -rf public
           mkdir public
-          # copy common static files; adjust if you have a different structure
-          cp -R index.html public/ || true
-          cp -R CNAME public/ || true
-          if [ -d css ]; then cp -R css public/; fi
-          if [ -d js ]; then cp -R js public/; fi
+          # copy site from PixelNeighbor subfolder
+          cp -R PixelNeighbor/index.html public/ || true
+          cp -R PixelNeighbor/CNAME public/ || true
+          if [ -d PixelNeighbor/css ]; then cp -R PixelNeighbor/css public/; fi
+          if [ -d PixelNeighbor/js ]; then cp -R PixelNeighbor/js public/; fi
           # set step output so the job can reference it
           echo "artifact-path=public" >> $GITHUB_OUTPUT
 
