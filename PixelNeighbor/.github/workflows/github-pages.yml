@@ -24,9 +24,7 @@ jobs:
           cp -R PixelNeighbor/index.html public/ || true
           cp -R PixelNeighbor/CNAME public/ || true
           if [ -d PixelNeighbor/css ]; then cp -R PixelNeighbor/css public/; fi
-          if [ -d PixelNeighbor/js ]; then cp -R PixelNeighbor/js public/; fi
-          # set step output so the job can reference it
-          echo "artifact-path=public" >> $GITHUB_OUTPUT
+          if [ -d PixelNeighbor/js ]; then cp -R PixelNeighbor/js public/; fi    
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
